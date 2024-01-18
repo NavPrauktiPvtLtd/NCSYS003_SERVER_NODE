@@ -85,6 +85,7 @@ class APP:
             return
         self.terminate_all_active_media()
         msgData = get_data_from_message(message)
+        print(msgData)
         if msgData:
             print("received otp")
         else:
