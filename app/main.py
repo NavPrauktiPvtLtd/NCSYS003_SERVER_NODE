@@ -17,27 +17,27 @@ logger = setup_applevel_logger(__name__)
 
 RELAY_ROOM_NO = os.getenv("RELAY_ROOM_NO")
 
-MQTT_HOST = os.getenv("MQTT_HOST")
+MQTT_HOST = "192.168.29.77"
 
-MQTT_USERNAME = os.getenv("MQTT_USER")
+# MQTT_USERNAME = os.getenv("MQTT_USER")
 
-MQTT_PASSWORD = os.getenv("MQTT_PASSWORD")
+# MQTT_PASSWORD = os.getenv("MQTT_PASSWORD")
 
 if not RELAY_ROOM_NO:
-    logger.error("Relay Room no not found")
+    logger.error("Relay Room No not found")
     exit()
 
 if not MQTT_HOST:
     logger.error("MQTT HOST not found")
     exit()
 
-if not MQTT_USERNAME:
-    logger.error("MQTT USERNAME not found")
-    exit()
+# if not MQTT_USERNAME:
+#     logger.error("MQTT USERNAME not found")
+#     exit()
 
-if not MQTT_PASSWORD:
-    logger.error("MQTT PASSWORD not found")
-    exit()
+# if not MQTT_PASSWORD:
+#     logger.error("MQTT PASSWORD not found")
+#     exit()
 
 
 def format_topic_name(x):
@@ -48,13 +48,13 @@ def format_topic_name(x):
 
 class APP:
     def __init__(
-        self, relayRoomNo: str, mqtt_host: str, mqtt_username: str, mqtt_password: str
+        self, relayRoomNo: str, mqtt_host: str
     ):
         self.client = None
         self.relayRoomNo = relayRoomNo
         self.mqtt_host = mqtt_host
-        self.mqtt_username = mqtt_username
-        self.mqtt_password = mqtt_password
+        # self.mqtt_username = mqtt_username
+        # self.mqtt_password = mqtt_password
 
     def on_mqtt_connect(self, client, userdata, flags, rc):
         if rc == 0:
@@ -81,18 +81,12 @@ class APP:
     
 
     def on_receive_otp(self, client, userdata, message):
-        if not self.playlist_player:
-            return
-        self.terminate_all_active_media()
         msgData = get_data_from_message(message)
         print(msgData)
         if msgData:
-            print("received otp")
+            logger.debug("received otp")
         else:
-            logger.error("No msg data in set_playlist message")
-
-
-
+            logger.error("No msg data in set_lock_code message")
 
 
     def start(self):
@@ -105,7 +99,7 @@ class APP:
                 ),
                 qos=2,
             )
-            self.client.username_pw_set(self.mqtt_username, self.mqtt_password)
+            # self.client.username_pw_set(self.mqtt_username, self.mqtt_password)
             self.client.connect(host=self.mqtt_host)
             self.client.on_connect = self.on_mqtt_connect
             self.client.on_disconnect = self.on_mqtt_disconnect
@@ -113,7 +107,7 @@ class APP:
             self.client.message_callback_add(
                 format_topic_name(Topic.SEND_OTP), self.on_receive_otp
             )
-            
+           
             self.client.loop_forever()
         except Exception as e:
             logger.error(e)
@@ -121,5 +115,5 @@ class APP:
             self.start()
 
 
-app = APP(RELAY_ROOM_NO, MQTT_HOST, MQTT_USERNAME, MQTT_PASSWORD)
+app = APP(RELAY_ROOM_NO, MQTT_HOST)
 app.start()
