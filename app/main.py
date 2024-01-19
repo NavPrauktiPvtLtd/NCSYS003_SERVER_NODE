@@ -2,13 +2,14 @@ import os
 import time
 import json
 
+from threading import Thread
 
 from dotenv import load_dotenv
 import paho.mqtt.client as mqtt
 from topic import Topic
 from logger.logger import setup_applevel_logger
 from utils import get_data_from_message, publish_message
-
+from simulator import door_sim
 
 load_dotenv()
 
@@ -48,10 +49,10 @@ def format_topic_name(x):
 
 class APP:
     def __init__(
-        self, relayRoomNo: str, mqtt_host: str
+        self, relay_room_no: str, mqtt_host: str
     ):
         self.client = None
-        self.relayRoomNo = relayRoomNo
+        self.relay_room_no = relay_room_no
         self.mqtt_host = mqtt_host
         # self.mqtt_username = mqtt_username
         # self.mqtt_password = mqtt_password
@@ -62,10 +63,10 @@ class APP:
             publish_message(
                 client,
                 Topic.NODE_STATE,
-                {"relayRoomNo": self.relayRoomNo, "isOnline": True},
+                {"relayRoomNo": self.relay_room_no, "isOnline": True},
                 qos=1,
             )
-            client.subscribe(format_topic_name(Topic.SEND_OTP))
+            client.subscribe(format_topic_name(Topic.SET_LOCK_CODE))
 
         else:
             logger.error("Connection failed")
@@ -88,14 +89,18 @@ class APP:
         else:
             logger.error("No msg data in set_lock_code message")
 
+    
+    def start_door_sim(self):
+        door_sim(self.client,self.relay_room_no)
+
 
     def start(self):
         try:
-            self.client = mqtt.Client(self.relayRoomNo)
+            self.client = mqtt.Client(self.relay_room_no)
             self.client.will_set(
                 Topic.NODE_STATE,
                 payload=str(
-                    json.dumps({"relayRoomNo": self.relayRoomNo, "isOnline": False})
+                    json.dumps({"relayRoomNo": self.relay_room_no, "isOnline": False})
                 ),
                 qos=2,
             )
@@ -105,7 +110,7 @@ class APP:
             self.client.on_disconnect = self.on_mqtt_disconnect
             self.client.on_message = self.on_mqtt_message
             self.client.message_callback_add(
-                format_topic_name(Topic.SEND_OTP), self.on_receive_otp
+                format_topic_name(Topic.SET_LOCK_CODE), self.on_receive_otp
             )
            
             self.client.loop_forever()
@@ -116,4 +121,8 @@ class APP:
 
 
 app = APP(RELAY_ROOM_NO, MQTT_HOST)
-app.start()
+
+t1 = Thread(target=app.start)
+t2 = Thread(target=app.start_door_sim)
+t1.start()
+t2.start()

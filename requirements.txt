@@ -1,3 +1,8 @@
+keyboard==0.13.5
+pynput==1.7.6
+python-xlib==0.33
+RPi.GPIO==0.7.1
+six==1.16.0
 bidict==0.22.0
 black==22.8.0
 certifi==2022.6.15
