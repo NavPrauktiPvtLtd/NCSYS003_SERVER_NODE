@@ -3,13 +3,20 @@ from logger.logger import setup_applevel_logger
 
 logger = setup_applevel_logger(__name__)
 
+OTP_FILE_PATH = 'otp.json'
+
+ACTIVATION_CODE = '#123#'
+
+OTP_LENGTH = 6
+
 class KeypadController:
     def __init__(self,mqtt_client):
-        self.activation_code = '#123#'
+        self.activation_code = ACTIVATION_CODE 
         self.keystrokes = ''
         self.activation_code_pressed = False
         self.mqtt_client = mqtt_client
-        self.otp_length = 6
+        self.otp_length = OTP_LENGTH
+        self.otp_file_path = OTP_FILE_PATH
 
     def run(self):
         logger.debug("listening for keystrokes.....")
@@ -65,9 +72,10 @@ class KeypadController:
             return result_string
         else:
             return ''
-
+    
     def handle_otp(self,otp):
         logger.debug(f"OTP: {otp} received")
+
 
 
 
