@@ -11,11 +11,13 @@ from logger.logger import setup_applevel_logger
 from utils import get_data_from_message, publish_message
 from simulator import door_sim
 from keypad import KeypadController
+from utils import read_json_file,write_json_file
 
 load_dotenv()
 
 logger = setup_applevel_logger(__name__)
 
+OTP_FILE_PATH = 'otp.json'
 
 RELAY_ROOM_NO = os.getenv("RELAY_ROOM_NO")
 
@@ -83,12 +85,27 @@ class APP:
     
 
     def on_receive_otp(self, client, userdata, message):
-        msgData = get_data_from_message(message)
-        print(msgData)
-        if msgData:
-            logger.debug("received otp")
-        else:
-            logger.error("No msg data in set_lock_code message")
+        try:
+            msgData = get_data_from_message(message)
+            if msgData:
+                otp = msgData["otp"]
+
+                logger.debug(f"received otp {otp}")
+
+                if otp:
+                    previous_otp_data = read_json_file(OTP_FILE_PATH)
+                    if previous_otp_data:
+                        default_otp = previous_otp_data["default_otp"]
+                    new_otp_data = {
+                        "current_otp": otp,
+                        "default_otp": default_otp
+                    }
+                    write_json_file(OTP_FILE_PATH,new_otp_data)
+
+            else:
+                logger.error("No msg data in set_lock_code message")
+        except Exception as err:
+            logger.error(err)
 
     
     def start_door_sim(self):

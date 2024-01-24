@@ -1,5 +1,6 @@
 from pynput.keyboard import Listener, Key
 from logger.logger import setup_applevel_logger
+from utils import read_json_file
 
 logger = setup_applevel_logger(__name__)
 
@@ -74,6 +75,22 @@ class KeypadController:
             return ''
     
     def handle_otp(self,otp):
+        otp_file_data = read_json_file(self.otp_file_path)
+        current_otp = otp_file_data["current_otp"]
+        default_otp = otp_file_data["default_otp"]
+
+        otp_matched = False 
+
+        if current_otp == otp or default_otp == otp: 
+            otp_matched = True
+
+        if otp_matched:
+            # open the lock
+            pass 
+        else:
+            # send mqtt msg for unsuccessful otp
+            pass
+
         logger.debug(f"OTP: {otp} received")
 
 
