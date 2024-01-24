@@ -10,7 +10,7 @@ from topic import Topic
 from logger.logger import setup_applevel_logger
 from utils import get_data_from_message, publish_message
 from simulator import door_sim
-from keypad import KEYPAD_LOCK
+from keypad import KeypadController
 
 load_dotenv()
 
@@ -95,7 +95,7 @@ class APP:
         door_sim(self.client,self.relay_room_no)
 
     def start_keypad(self):
-        keypad = KEYPAD_LOCK(self.client,debug=True)
+        keypad = KeypadController(self.client,debug=True)
         keypad.run()
 
 
