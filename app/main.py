@@ -10,6 +10,7 @@ from topic import Topic
 from logger.logger import setup_applevel_logger
 from utils import get_data_from_message, publish_message
 from simulator import door_sim
+from keypad import KEYPAD_LOCK
 
 load_dotenv()
 
@@ -93,6 +94,10 @@ class APP:
     def start_door_sim(self):
         door_sim(self.client,self.relay_room_no)
 
+    def start_keypad(self):
+        keypad = KEYPAD_LOCK(self.client,debug=True)
+        keypad.run()
+
 
     def start(self):
         try:
@@ -123,6 +128,10 @@ class APP:
 app = APP(RELAY_ROOM_NO, MQTT_HOST)
 
 t1 = Thread(target=app.start)
-t2 = Thread(target=app.start_door_sim)
+# t2 = Thread(target=app.start_door_sim)
+t3 = Thread(target=app.start_keypad)
+
+
 t1.start()
-t2.start()
+# t2.start()
+t3.start()
