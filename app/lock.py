@@ -14,9 +14,18 @@ class LockController:
         GPIO.output(self.RELAY_PIN, GPIO.LOW)
 
     def open(self):
-        logger.debug("unlocked")
-        GPIO.output(self.RELAY_PIN, GPIO.HIGH)
+        try:
+            logger.debug("unlocked")
+            GPIO.output(self.RELAY_PIN, GPIO.HIGH)
+        except Exception as e:
+            logger.error(f"Error unlocking: {e}")
 
     def close(self):
-        logger.debug("locked")
-        GPIO.output(self.RELAY_PIN, GPIO.LOW)
+        try:
+            logger.debug("locked")
+            GPIO.output(self.RELAY_PIN, GPIO.LOW)
+        except Exception as e:
+            logger.error(f"Error locking: {e}")
+
+
+     

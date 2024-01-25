@@ -11,21 +11,12 @@ from logger.logger import setup_applevel_logger
 from utils import get_data_from_message, publish_message
 from simulator import door_sim
 from keypad import KeypadController
-from utils import read_json_file,write_json_file
+from utils import read_json_file,write_json_file,generate_absolute_path
+from constants import OTP_FILE_PATH,RELAY_ROOM_NO,MQTT_HOST
 
 load_dotenv()
 
 logger = setup_applevel_logger(__name__)
-
-OTP_FILE_PATH = 'otp.json'
-
-RELAY_ROOM_NO = os.getenv("RELAY_ROOM_NO")
-
-MQTT_HOST = "192.168.29.77"
-
-# MQTT_USERNAME = os.getenv("MQTT_USER")
-
-# MQTT_PASSWORD = os.getenv("MQTT_PASSWORD")
 
 if not RELAY_ROOM_NO:
     logger.error("Relay Room No not found")
@@ -35,24 +26,13 @@ if not MQTT_HOST:
     logger.error("MQTT HOST not found")
     exit()
 
-# if not MQTT_USERNAME:
-#     logger.error("MQTT USERNAME not found")
-#     exit()
-
-# if not MQTT_PASSWORD:
-#     logger.error("MQTT PASSWORD not found")
-#     exit()
-
 
 def format_topic_name(x):
     return f"{RELAY_ROOM_NO}-{x}"
 
-
-
-
 class APP:
     def __init__(
-        self, relay_room_no: str, mqtt_host: str
+        self, relay_room_no, mqtt_host
     ):
         self.client = None
         self.relay_room_no = relay_room_no
@@ -70,6 +50,7 @@ class APP:
                 qos=1,
             )
             client.subscribe(format_topic_name(Topic.SET_LOCK_CODE))
+
 
         else:
             logger.error("Connection failed")
@@ -112,7 +93,7 @@ class APP:
         door_sim(self.client,self.relay_room_no)
 
     def start_keypad(self):
-        keypad = KeypadController(self.client,debug=True)
+        keypad = KeypadController(self.client,self.relay_room_no)
         keypad.run()
 
 

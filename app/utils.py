@@ -10,6 +10,10 @@ load_dotenv()
 logger = setup_applevel_logger(__name__)
 
 
+def generate_absolute_path(relative_path):
+    current_directory = os.getcwd()
+    absolute_path = os.path.abspath(os.path.join(current_directory, relative_path))
+    return absolute_path
 
 def publish_message(client: mqtt.Client, topic: str, message, qos=0):
     if not client:
