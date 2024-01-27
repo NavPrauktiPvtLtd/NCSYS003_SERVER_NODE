@@ -13,6 +13,7 @@ from simulator import door_sim
 from keypad import KeypadController
 from utils import read_json_file,write_json_file,generate_absolute_path
 from constants import OTP_FILE_PATH,RELAY_ROOM_NO,MQTT_HOST
+from door import DoorController
 
 load_dotenv()
 
@@ -89,8 +90,9 @@ class APP:
             logger.error(err)
 
     
-    def start_door_sim(self):
-        door_sim(self.client,self.relay_room_no)
+    def start_door_status_listener(self):
+        door_controller = DoorController()
+        door_controller.run()
 
     def start_keypad(self):
         keypad = KeypadController(self.client,self.relay_room_no)
@@ -126,10 +128,10 @@ class APP:
 app = APP(RELAY_ROOM_NO, MQTT_HOST)
 
 t1 = Thread(target=app.start)
-# t2 = Thread(target=app.start_door_sim)
+t2 = Thread(target=app.start_door_status_listener)
 t3 = Thread(target=app.start_keypad)
 
 
 t1.start()
-# t2.start()
+t2.start()
 t3.start()
