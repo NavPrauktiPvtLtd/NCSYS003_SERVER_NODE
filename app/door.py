@@ -14,6 +14,7 @@ INPUT_PIN = 19
 
 class DoorController:
     def __init__(self,mqtt_client,relay_room_no):
+        logger.debug('Tracking door state')
         self.OUTPUT_PIN = OUTPUT_PIN
         self.INPUT_PIN = INPUT_PIN
         self.mqtt_client = mqtt_client
@@ -51,6 +52,7 @@ class DoorController:
 
                 # we will only state the status to server if there is a change
                 if current_state != self.previous_state:
+                    logger.debug('Door state changed')
                     publish_message(
                         self.mqtt_client,
                         Topic.DOOR_STATUS,
