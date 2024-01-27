@@ -36,15 +36,21 @@ class DoorController:
 
     def check_input_pin(self):
         return GPIO.input(self.INPUT_PIN) == GPIO.LOW
+    
+    def is_locked(self):
+        return GPIO.input(self.RELAY_PIN) == GPIO.LOW
 
     def run(self):
         logger.debug('Tracking door state: r')
         try:
             while True:
                 current_state = self.check_input_pin()
-                logger.debug(f'Door is opened: {current_state}')
-                if current_state == False:
-                    #this means door is unlock so we will update unlocked seconds
+
+                logger.debug(f'is locked: {self.is_locked()}')
+                
+                
+
+                if self.is_locked():
                     self.unlocked_seconds = self.unlocked_seconds + self.check_interval
 
                 # intital value set
