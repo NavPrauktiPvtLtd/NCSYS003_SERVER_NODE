@@ -26,7 +26,7 @@ class DoorController:
 
         self.auto_lock_interval = AUTO_LOCK_INTERVAL
 
-        self.RELAY_PIN = 11
+        self.RELAY_PIN = 23
 
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
@@ -38,6 +38,7 @@ class DoorController:
         return GPIO.input(self.INPUT_PIN) == GPIO.LOW
 
     def run(self):
+        logger.debug('Tracking door state: r')
         try:
             while True:
                 current_state = self.check_input_pin()
