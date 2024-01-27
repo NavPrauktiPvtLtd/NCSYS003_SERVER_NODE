@@ -92,7 +92,7 @@ class APP:
     
     def start_door_status_listener(self):
         door_controller = DoorController()
-        door_controller.run()
+        door_controller.run(self.client,self.relay_room_no)
 
     def start_keypad(self):
         keypad = KeypadController(self.client,self.relay_room_no)
