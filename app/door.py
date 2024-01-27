@@ -42,7 +42,7 @@ class DoorController:
         try:
             while True:
                 current_state = self.check_input_pin()
-
+                logger.debug(f'Door is opened: {current_state}')
                 if current_state == False:
                     #this means door is unlock so we will update unlocked seconds
                     self.unlocked_seconds = self.unlocked_seconds + self.check_interval
@@ -63,7 +63,6 @@ class DoorController:
 
                 self.previous_state = current_state
 
-                logger.debug(f"unlocked seconds: {self.unlocked_seconds}")
 
                 if self.unlocked_seconds == int(self.auto_lock_interval):
                     logger('Auto locking...........')
