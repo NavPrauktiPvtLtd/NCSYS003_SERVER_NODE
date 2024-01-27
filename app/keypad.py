@@ -90,10 +90,12 @@ class KeypadController:
             
 
         if otp_matched:
-            # open the lock here 
-            self.lock_controller.open()
+            # open the lock here
+            lock_controller = LockController() 
+            lock_controller.open()
         else:
-            self.lock_controller.close()
+            lock_controller = LockController() 
+            lock_controller.close()
 
         publish_message(
             self.mqtt_client,
