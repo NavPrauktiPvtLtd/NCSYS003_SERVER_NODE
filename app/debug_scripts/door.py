@@ -1,11 +1,11 @@
 import RPi.GPIO as GPIO
 import time
 
-output = 3
-input_pin = 7
+output = 5
+input_pin = 19
 
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD)
 
 GPIO.setup(output, GPIO.OUT)
 GPIO.output(output, GPIO.HIGH)
