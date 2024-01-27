@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 
 output = 3
-input_pin = 4
+input_pin = 7
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
