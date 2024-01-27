@@ -9,8 +9,8 @@ from constants import AUTO_LOCK_INTERVAL
 logger = setup_applevel_logger(__name__)
 
 
-OUTPUT_PIN = 3
-INPUT_PIN = 4
+OUTPUT_PIN = 5
+INPUT_PIN = 19
 
 class DoorController:
     def __init__(self,mqtt_client,relay_room_no):

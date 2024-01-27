@@ -7,7 +7,7 @@ logger = setup_applevel_logger(__name__)
 
 class LockController:
     def __init__(self):
-        self.RELAY_PIN = 11
+        self.RELAY_PIN = 23
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.RELAY_PIN, GPIO.OUT)
