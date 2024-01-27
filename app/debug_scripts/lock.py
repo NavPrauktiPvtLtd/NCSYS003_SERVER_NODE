@@ -1,9 +1,10 @@
 import argparse
 import RPi.GPIO as GPIO
 import logging
-from logger.logger import setup_applevel_logger
 
-logger = setup_applevel_logger(__name__)
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 class LockController:
     def __init__(self, relay_pin):
