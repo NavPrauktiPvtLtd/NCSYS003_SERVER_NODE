@@ -42,3 +42,5 @@ except KeyboardInterrupt:
     print("stopped")
 finally:
     GPIO.cleanup()
+
+check_input_pin()
