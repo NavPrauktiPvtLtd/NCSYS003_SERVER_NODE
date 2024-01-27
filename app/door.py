@@ -63,9 +63,12 @@ class DoorController:
 
                 self.previous_state = current_state
 
+                logger.debug(f"unlocked seconds: {self.unlocked_seconds}")
+
                 if self.unlocked_seconds == int(self.auto_lock_interval):
                     logger('Auto locking...........')
                     GPIO.output(self.RELAY_PIN, GPIO.LOW)
+                    self.unlocked_seconds = 0
 
                 time.sleep(self.check_interval)
 
