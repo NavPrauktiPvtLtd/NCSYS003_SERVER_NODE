@@ -33,6 +33,8 @@ class DoorController:
 
         GPIO.setup(self.OUTPUT_PIN, GPIO.OUT)
         GPIO.setup(self.INPUT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(self.RELAY_PIN, GPIO.OUT)
+        GPIO.output(self.RELAY_PIN, GPIO.LOW)
 
     def check_input_pin(self):
         return GPIO.input(self.INPUT_PIN) == GPIO.LOW
