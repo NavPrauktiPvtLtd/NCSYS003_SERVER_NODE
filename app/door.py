@@ -24,6 +24,8 @@ class DoorController:
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.OUTPUT_PIN, GPIO.OUT)
+        GPIO.output(self.OUTPUT_PIN, GPIO.HIGH)
+        
         GPIO.setup(self.INPUT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 
