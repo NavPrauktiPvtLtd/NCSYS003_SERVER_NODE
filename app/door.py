@@ -38,8 +38,6 @@ class DoorController:
             while True:
                 current_state = self.check_input_pin()
 
-                logger.debug(f'is locked: {self.is_locked()}')
-
                 # intital value set
                 if self.previous_state == None:
                     self.previous_state = current_state

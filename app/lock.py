@@ -62,7 +62,7 @@ class LockController:
             while True:
                 logger.debug(f'is locked: {self.is_locked()}')
 
-                if self.is_locked():
+                if not self.is_locked():
                     self.unlocked_seconds = self.unlocked_seconds + self.check_interval
                     logger.debug(f"unlocked seconds : {self.unlocked_seconds}")
 
