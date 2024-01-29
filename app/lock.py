@@ -59,8 +59,8 @@ class LockController:
     
     def run(self):
         try:
+            logger.debug('Lock Tracker activated')
             while True:
-                logger.debug('Lock Tracker activated')
 
                 if not self.is_locked():
                     self.unlocked_seconds = self.unlocked_seconds + self.check_interval
