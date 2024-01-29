@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-from utils import generate_absolute_path
 import os
 
 load_dotenv()
