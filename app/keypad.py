@@ -1,6 +1,6 @@
 from pynput.keyboard import Listener, Key
 from logger.logger import setup_applevel_logger
-from utils import read_json_file
+from utils import read_json_file,write_json_file
 from constants import OTP_FILE_PATH,ACTIVATION_CODE
 
 logger = setup_applevel_logger(__name__,'log.txt')
@@ -91,6 +91,15 @@ class KeypadController:
             logger.debug(f"OTP matched : {otp}")
             logger.debug(f"Unlocking....")
             self.lock_controller.open()
+            previous_otp_data = read_json_file(OTP_FILE_PATH)
+            if previous_otp_data:
+                default_otp = previous_otp_data["default_otp"]
+            new_otp_data = {
+                "current_otp": "",
+                "default_otp": default_otp
+            }
+            logger.debug("clearing previous otp")
+            write_json_file(OTP_FILE_PATH,new_otp_data)
         else:
             logger.debug(f"OTP not matched : {otp}")
 
