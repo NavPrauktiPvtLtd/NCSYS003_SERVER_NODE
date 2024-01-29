@@ -23,7 +23,7 @@ class KeypadController:
             logger.error(e)
 
     def run(self):
-        logger.debug("listening for keystrokes.....")
+        logger.debug("Keypad activated")
         with Listener(on_press=self.on_keypress) as listener:
             listener.join()
 

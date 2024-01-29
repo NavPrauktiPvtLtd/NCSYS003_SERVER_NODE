@@ -13,7 +13,6 @@ INPUT_PIN = 19
 
 class DoorController:
     def __init__(self,mqtt_client,relay_room_no):
-        logger.debug('Tracking door state')
         self.OUTPUT_PIN = OUTPUT_PIN
         self.INPUT_PIN = INPUT_PIN
         self.mqtt_client = mqtt_client
@@ -33,7 +32,7 @@ class DoorController:
         return GPIO.input(self.INPUT_PIN) == GPIO.LOW
     
     def run(self):
-        logger.debug('Tracking door state: r')
+        logger.debug('Door tracking activated')
         try:
             while True:
                 current_state = self.check_input_pin()
