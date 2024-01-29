@@ -77,7 +77,7 @@ class LockController:
                         {"relayRoomNo": self.relay_room_no, "isSuccessful": False},
                         qos=1,
                     )
-                    GPIO.output(self.RELAY_PIN, GPIO.LOW)
+                    self.close()
                     self.unlocked_seconds = 0 
                 
                 time.sleep(self.check_interval) 
