@@ -146,10 +146,14 @@ class APP:
 app = APP(RELAY_ROOM_NO, MQTT_HOST)
 
 t1 = Thread(target=app.start)
-t3 = Thread(target=app.start_keypad)
-t2 = Thread(target=app.start_door_status_listener)
+t2 = Thread(target=app.door_state_tracker)
+t3 = Thread(target=app.lock_state_tracker)
+t4 = Thread(target=app.start_keypad)
+
 
 
 t1.start()
 t2.start()
 t3.start()
+t4.start()
+
