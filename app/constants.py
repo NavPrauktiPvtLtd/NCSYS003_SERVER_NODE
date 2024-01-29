@@ -4,7 +4,8 @@ import os
 
 load_dotenv()
 
-OTP_FILE_PATH = generate_absolute_path('app/otp.json')
+# OTP_FILE_PATH = generate_absolute_path('app/otp.json')
+OTP_FILE_PATH = '/home/pi/nfr/NCSYS003_SERVER_NODE/app/otp.json'
 
 RELAY_ROOM_NO = os.getenv("RELAY_ROOM_NO")
 
