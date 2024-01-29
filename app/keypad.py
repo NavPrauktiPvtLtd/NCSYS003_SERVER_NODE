@@ -28,7 +28,6 @@ class KeypadController:
             listener.join()
 
     def clear(self):
-        logger.debug("clearing keystrokes")
         self.keystrokes = ''
 
     def on_keypress(self,key):
@@ -37,7 +36,7 @@ class KeypadController:
         except AttributeError:
             pass
         
-        logger.debug(f"{key} is pressed")
+        # logger.debug(f"{key} is pressed")
 
         if key == Key.shift:
             return
@@ -54,7 +53,7 @@ class KeypadController:
         
 
     def handle_enter_press(self):
-        logger.debug(f"enter pressed with {self.keystrokes}")
+        logger.debug(f"Enter pressed: {self.keystrokes}")
         # check if activation code is already pressed and ketstrokes matches the otp length
         if self.activation_code_pressed and len(self.keystrokes) == self.otp_length:
             # this means this is the otp
@@ -63,6 +62,7 @@ class KeypadController:
             return
         # check if activation code is pressed 
         if self.keystrokes == self.activation_code:
+            logger.debug(f"Activation code pressed")
             self.activation_code_pressed = True
             self.clear()
         else: 
