@@ -14,6 +14,7 @@ from keypad import KeypadController
 from utils import read_json_file,write_json_file,generate_absolute_path
 from constants import OTP_FILE_PATH,RELAY_ROOM_NO,MQTT_HOST
 from door import DoorController
+from lock import LockController
 
 load_dotenv()
 
@@ -38,6 +39,9 @@ class APP:
         self.client = None
         self.relay_room_no = relay_room_no
         self.mqtt_host = mqtt_host
+        self.door_controller = None 
+        self.key_controller = None 
+        self.lock_controller = None
         # self.mqtt_username = mqtt_username
         # self.mqtt_password = mqtt_password
 
@@ -90,13 +94,24 @@ class APP:
             logger.error(err)
 
     
-    def start_door_status_listener(self):
-        door_controller = DoorController(self.client,self.relay_room_no)
-        door_controller.run()
+    def door_state_tracker(self):
+        if self.door_controller == None:
+            logger.error("Door controller not initialize")
+        else:
+            self.door_controller.run()
 
     def start_keypad(self):
-        keypad = KeypadController(self.client,self.relay_room_no)
-        keypad.run()
+        if self.key_controller == None:
+            logger.error("Keypad controller not initialize")
+        else:
+            self.key_controller.run()
+
+    def lock_state_tracker(self):
+        if self.lock_controller == None:
+            logger.error("Lock controller not initialize")
+        else:
+            self.lock_controller.run()
+
 
 
     def start(self):
@@ -117,6 +132,9 @@ class APP:
             self.client.message_callback_add(
                 format_topic_name(Topic.SET_LOCK_CODE), self.on_receive_otp
             )
+            self.door_controller = DoorController(self.client,self.relay_room_no)
+            self.lock_controller = LockController(self.client,self.relay_room_no)
+            self.key_controller = KeypadController(self.client,self.relay_room_no,self.lock_controller)
            
             self.client.loop_forever()
         except Exception as e:
@@ -128,8 +146,8 @@ class APP:
 app = APP(RELAY_ROOM_NO, MQTT_HOST)
 
 t1 = Thread(target=app.start)
-t2 = Thread(target=app.start_door_status_listener)
 t3 = Thread(target=app.start_keypad)
+t2 = Thread(target=app.start_door_status_listener)
 
 
 t1.start()

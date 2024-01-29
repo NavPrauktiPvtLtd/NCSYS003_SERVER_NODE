@@ -1,8 +1,7 @@
 from pynput.keyboard import Listener, Key
 from topic import Topic
 from logger.logger import setup_applevel_logger
-from utils import publish_message, read_json_file,generate_absolute_path
-from lock import LockController
+from utils import publish_message, read_json_file
 from constants import OTP_FILE_PATH,ACTIVATION_CODE
 
 logger = setup_applevel_logger(__name__)
@@ -10,7 +9,7 @@ logger = setup_applevel_logger(__name__)
 OTP_LENGTH = 6
 
 class KeypadController:
-    def __init__(self,mqtt_client,relay_room_no):
+    def __init__(self,mqtt_client,relay_room_no,lock_controller):
         try:
             self.activation_code = ACTIVATION_CODE 
             self.keystrokes = ''
@@ -19,7 +18,7 @@ class KeypadController:
             self.mqtt_client = mqtt_client
             self.otp_length = OTP_LENGTH
             self.otp_file_path = OTP_FILE_PATH 
-            self.lock_controller = LockController()
+            self.lock_controller = lock_controller
         except Exception as e: 
             logger.error(e)
 
@@ -90,19 +89,11 @@ class KeypadController:
             
 
         if otp_matched:
-            # open the lock here
-            lock_controller = LockController() 
-            lock_controller.open()
+            logger.debug(f"OTP matched : {otp}")
+            logger.debug(f"Unlocking....")
+            self.lock_controller.open()
         else:
-            lock_controller = LockController() 
-            lock_controller.close()
-
-        publish_message(
-            self.mqtt_client,
-            Topic.LOCK_STATUS,
-            {"relayRoomNo": self.relay_room_no, "isSuccessful": otp_matched},
-            qos=1,
-        )
+            logger.debug(f"OTP not matched : {otp}")
 
         logger.debug(f"OTP: {otp} received")
 
