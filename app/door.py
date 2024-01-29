@@ -5,7 +5,7 @@ from utils import publish_message
 from topic import Topic
 
 
-logger = setup_applevel_logger(__name__)
+logger = setup_applevel_logger(__name__,'log.txt')
 
 
 OUTPUT_PIN = 5

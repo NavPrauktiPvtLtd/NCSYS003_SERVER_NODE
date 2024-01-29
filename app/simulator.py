@@ -6,7 +6,7 @@ from utils import publish_message
 from logger.logger import setup_applevel_logger
 import re
  
-logger = setup_applevel_logger(__name__)
+logger = setup_applevel_logger(__name__,'log.txt')
 
 # q - open door
 # w - close door 

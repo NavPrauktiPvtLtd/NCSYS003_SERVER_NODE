@@ -17,7 +17,7 @@ from lock import LockController
 
 load_dotenv()
    
-logger = setup_applevel_logger(__name__)
+logger = setup_applevel_logger(__name__,'log.txt')
 
 if not RELAY_ROOM_NO:
     logger.error("Relay Room No not found")

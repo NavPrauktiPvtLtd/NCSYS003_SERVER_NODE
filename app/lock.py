@@ -4,7 +4,7 @@ from constants import AUTO_LOCK_INTERVAL
 from utils import publish_message
 from topic import Topic
 import time
-logger = setup_applevel_logger(__name__)
+logger = setup_applevel_logger(__name__,'log.txt')
 
 class LockController:
     def __init__(self,mqtt_client,relay_room_no):

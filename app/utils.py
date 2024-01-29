@@ -6,7 +6,7 @@ import os
 
 load_dotenv()
 
-logger = setup_applevel_logger(__name__)
+logger = setup_applevel_logger(__name__,'log.txt')
 
 
 def generate_absolute_path(relative_path):
