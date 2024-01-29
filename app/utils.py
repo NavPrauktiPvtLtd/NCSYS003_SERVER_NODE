@@ -3,7 +3,6 @@ import json
 from dotenv import load_dotenv
 import paho.mqtt.client as mqtt
 import os
-from pathlib import Path
 
 load_dotenv()
 

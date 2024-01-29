@@ -9,15 +9,14 @@ import paho.mqtt.client as mqtt
 from topic import Topic
 from logger.logger import setup_applevel_logger
 from utils import get_data_from_message, publish_message
-from simulator import door_sim
 from keypad import KeypadController
 from utils import read_json_file,write_json_file,generate_absolute_path
-from constants import OTP_FILE_PATH,RELAY_ROOM_NO,MQTT_HOST
+from constants import OTP_FILE_PATH,RELAY_ROOM_NO,MQTT_HOST,DEFAULT_OTP
 from door import DoorController
 from lock import LockController
 
 load_dotenv()
-
+   
 logger = setup_applevel_logger(__name__)
 
 if not RELAY_ROOM_NO:
@@ -28,6 +27,19 @@ if not MQTT_HOST:
     logger.error("MQTT HOST not found")
     exit()
 
+if not os.path.exists(OTP_FILE_PATH):
+    # File doesn't exist, so create it with the specified content
+    otp_content = {
+        "current_otp": "",
+        "default_otp": DEFAULT_OTP
+    }
+
+    with open(OTP_FILE_PATH, 'w') as file:
+        file.write(json.dumps(otp_content, indent=4))
+
+    print(f"OTP file created at: {OTP_FILE_PATH}")
+else:
+    print(f"OTP file already exists at: {OTP_FILE_PATH}")
 
 def format_topic_name(x):
     return f"{RELAY_ROOM_NO}-{x}"
@@ -153,8 +165,10 @@ t4 = Thread(target=app.start_keypad)
 
 
 t1.start()
-time.sleep(5)
+time.sleep(2)
 t2.start()
+time.sleep(1)
 t3.start()
+time.sleep(1)
 t4.start()
 

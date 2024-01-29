@@ -11,13 +11,15 @@ class LockController:
         self.RELAY_PIN = 23
         self.mqtt_client = mqtt_client 
         self.relay_room_no = relay_room_no
+
+        self.unlocked_seconds = 0 
+        self.check_interval = 1
+        self.auto_lock_interval = AUTO_LOCK_INTERVAL
+
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.RELAY_PIN, GPIO.OUT)
         GPIO.output(self.RELAY_PIN, GPIO.LOW)
-        self.unlocked_seconds = 0 
-        self.check_interval = 1
-        self.auto_lock_interval = AUTO_LOCK_INTERVAL
 
     def is_locked(self):
         return GPIO.input(self.RELAY_PIN) == GPIO.LOW
