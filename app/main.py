@@ -66,7 +66,14 @@ class APP:
                 {"relayRoomNo": self.relay_room_no, "isOnline": True},
                 qos=1,
             )
+            publish_message(
+                client,
+                Topic.REQUEST_DEFAULT_OTP,
+                {"relayRoomNo": self.relay_room_no},
+                qos=1,
+            )
             client.subscribe(format_topic_name(Topic.SET_LOCK_CODE))
+            client.subscribe(format_topic_name(Topic.SET_DEFAULT_OTP))
 
 
         else:
@@ -106,6 +113,30 @@ class APP:
             logger.error(err)
 
     
+    def on_receive_default_otp(self, client, userdata, message):
+        try:
+            msgData = get_data_from_message(message)
+            if msgData:
+                otp = msgData["defaultOtp"]
+
+                logger.debug(f"received otp {otp}")
+
+                if otp:
+                    previous_otp_data = read_json_file(OTP_FILE_PATH)
+                    if previous_otp_data:
+                        current_otp = previous_otp_data["current_otp"]
+                    new_otp_data = {
+                        "current_otp": current_otp,
+                        "default_otp": otp
+                    }
+                    write_json_file(OTP_FILE_PATH,new_otp_data)
+
+            else:
+                logger.error("No msg data in set_default_otp message")
+        except Exception as err:
+            logger.error(err)
+
+
     def door_state_tracker(self):
         if self.door_controller == None:
             logger.error("Door controller not initialize")
@@ -143,6 +174,9 @@ class APP:
             self.client.on_message = self.on_mqtt_message
             self.client.message_callback_add(
                 format_topic_name(Topic.SET_LOCK_CODE), self.on_receive_otp
+            )
+            self.client.message_callback_add(
+                format_topic_name(Topic.SET_DEFAULT_OTP), self.on_receive_default_otp
             )
             self.door_controller = DoorController(self.client,self.relay_room_no)
             self.lock_controller = LockController(self.client,self.relay_room_no)
