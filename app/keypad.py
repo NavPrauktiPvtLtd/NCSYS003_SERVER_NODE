@@ -72,9 +72,10 @@ class KeypadController:
         # remove the last character from the string
         if self.keystrokes:
             result_string = self.keystrokes[:-1]
-            return result_string
-        else:
-            return ''
+            self.keystrokes=result_string
+            # return result_string
+        # else:
+        #     return ''
     
     def handle_otp(self,otp):
         otp_file_data = read_json_file(self.otp_file_path)
