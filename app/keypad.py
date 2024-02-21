@@ -84,7 +84,7 @@ class KeypadController:
         default_otp = otp_file_data["default_otp"]
 
 
-        if entry_otp == otp or default_otp == otp: 
+        if entry_otp == otp: 
             logger.debug(f"OTP matched : {otp}")
             logger.debug(f"Unlocking....")
             self.lock_controller.open()
