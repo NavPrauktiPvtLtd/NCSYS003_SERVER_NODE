@@ -30,7 +30,8 @@ if not MQTT_HOST:
 if not os.path.exists(OTP_FILE_PATH):
     # File doesn't exist, so create it with the specified content
     otp_content = {
-        "current_otp": "",
+        "entry_otp": "",
+        "exit_otp": "",
         "default_otp": DEFAULT_OTP
     }
 
@@ -102,7 +103,8 @@ class APP:
                     if previous_otp_data:
                         default_otp = previous_otp_data["default_otp"]
                     new_otp_data = {
-                        "current_otp": otp,
+                        "entry_otp": otp,
+                        "exit_otp": otp,
                         "default_otp": default_otp
                     }
                     write_json_file(OTP_FILE_PATH,new_otp_data)
@@ -124,9 +126,11 @@ class APP:
                 if otp:
                     previous_otp_data = read_json_file(OTP_FILE_PATH)
                     if previous_otp_data:
-                        current_otp = previous_otp_data["current_otp"]
+                        entry_otp = previous_otp_data["entry_otp"]
+                        exit_otp = previous_otp_data["exit_otp"]
                     new_otp_data = {
-                        "current_otp": current_otp,
+                        "entry_otp": entry_otp,
+                        "exit_otp": exit_otp,
                         "default_otp": otp
                     }
                     write_json_file(OTP_FILE_PATH,new_otp_data)

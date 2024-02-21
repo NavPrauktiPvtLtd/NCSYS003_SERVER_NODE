@@ -1,4 +1,5 @@
 {
-    "current_otp": "",
+    "entry_otp": "",
+    "exit_otp": "",
     "default_otp": "222333"
 }

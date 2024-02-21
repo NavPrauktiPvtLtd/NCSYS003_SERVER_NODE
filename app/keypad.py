@@ -79,32 +79,53 @@ class KeypadController:
     
     def handle_otp(self,otp):
         otp_file_data = read_json_file(self.otp_file_path)
-        current_otp = otp_file_data["current_otp"]
+        entry_otp = otp_file_data["entry_otp"]
+        exit_otp = otp_file_data["exit_otp"]
         default_otp = otp_file_data["default_otp"]
 
-        otp_matched = False 
 
-        if current_otp == otp or default_otp == otp: 
-            otp_matched = True
-            
-
-        if otp_matched:
+        if entry_otp == otp or default_otp == otp: 
             logger.debug(f"OTP matched : {otp}")
             logger.debug(f"Unlocking....")
             self.lock_controller.open()
             previous_otp_data = read_json_file(OTP_FILE_PATH)
             if previous_otp_data:
                 default_otp = previous_otp_data["default_otp"]
+                exit_otp = previous_otp_data["exit_otp"]
             new_otp_data = {
-                "current_otp": "",
+                "exit_otp": exit_otp,
+                "entry_otp": "",
                 "default_otp": default_otp
             }
-            logger.debug("clearing previous otp")
+            logger.debug("clearing previous entry otp")
             write_json_file(OTP_FILE_PATH,new_otp_data)
-        else:
-            logger.debug(f"OTP not matched : {otp}")
+            return 
 
-        logger.debug(f"OTP: {otp} received")
+        if exit_otp == otp: 
+            logger.debug(f"OTP matched : {otp}")
+            logger.debug(f"Unlocking....")
+            self.lock_controller.open()
+            previous_otp_data = read_json_file(OTP_FILE_PATH)
+            if previous_otp_data:
+                default_otp = previous_otp_data["default_otp"]
+                entry_otp = previous_otp_data["entry_otp"]
+            new_otp_data = {
+                "exit_otp": "",
+                "entry_otp": entry_otp,
+                "default_otp": default_otp
+            }
+            logger.debug("clearing previous exit otp")
+            write_json_file(OTP_FILE_PATH,new_otp_data)
+            return 
+
+        if default_otp == otp: 
+            logger.debug(f"OTP matched : {otp}")
+            logger.debug(f"Unlocking....")
+            self.lock_controller.open()
+            return
+
+        logger.debug(f"Wrong otp received: {otp}")
+
 
 
 
