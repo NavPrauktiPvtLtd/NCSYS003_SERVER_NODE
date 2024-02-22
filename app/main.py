@@ -94,17 +94,18 @@ class APP:
         try:
             msgData = get_data_from_message(message)
             if msgData:
-                otp = msgData["otp"]
+                entryOtp = msgData["entry_otp"]
+                exitOtp = msgData["exit_otp"]
 
-                logger.debug(f"received otp {otp}")
+                logger.debug(f"received otp {entryOtp},{exitOtp}")
 
-                if otp:
+                if entryOtp and exitOtp:
                     previous_otp_data = read_json_file(OTP_FILE_PATH)
                     if previous_otp_data:
                         default_otp = previous_otp_data["default_otp"]
                     new_otp_data = {
-                        "entry_otp": otp,
-                        "exit_otp": otp,
+                        "entry_otp": entryOtp,
+                        "exit_otp": exitOtp,
                         "default_otp": default_otp
                     }
                     write_json_file(OTP_FILE_PATH,new_otp_data)
