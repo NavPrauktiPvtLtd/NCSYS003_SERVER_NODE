@@ -1,4 +1,4 @@
-import keyboard
+from pynput.keyboard import Listener, Key
 from logger.logger import setup_applevel_logger
 from utils import read_json_file,write_json_file
 from constants import OTP_FILE_PATH,ACTIVATION_CODE
@@ -18,42 +18,38 @@ class KeypadController:
             self.otp_length = OTP_LENGTH
             self.otp_file_path = OTP_FILE_PATH 
             self.lock_controller = lock_controller
-            self.shift_pressed = False
         except Exception as e: 
             logger.error(e)
 
-
-
+    def run(self):
+        logger.debug("Keypad activated")
+        with Listener(on_press=self.on_keypress) as listener:
+            listener.join()
 
     def clear(self):
         self.keystrokes = ''
 
-    def on_key_event(self,e):
-        key_pressed = ''
-        if e.event_type == keyboard.KEY_DOWN:
-            if e.name == 'shift':
-                self.shift_pressed = True
-                return
-            self.shift_pressed = False
-
-            if e.name == 'enter':
-                self.handle_enter_press()
-                return
-            if e.name == 'backspace':
-                self.handle_backspace_press()
-                return
-           
-            if self.shift_pressed and e.name == '3':
-                key_pressed = '#'
-            else:
-                key_pressed = e.name
-
-        self.keystrokes = self.keystrokes + key_pressed
+    def on_keypress(self,key):
+        try:
+            key = key.char
+        except AttributeError:
+            pass
         
-    def run(self):
-        logger.debug("Keypad activated")
-        keyboard.hook(self.on_key_event)
-        keyboard.wait() 
+        # logger.debug(f"{key} is pressed")
+
+        if key == Key.shift:
+            return
+
+        if key == Key.enter:
+            self.handle_enter_press()
+            return
+        
+        if key == Key.backspace:
+            self.handle_backspace_press()
+            return
+
+        self.keystrokes = self.keystrokes + key
+        
 
     def handle_enter_press(self):
         logger.debug(f"Enter pressed: {self.keystrokes}")
@@ -78,7 +74,6 @@ class KeypadController:
             result_string = self.keystrokes[:-1]
             self.keystrokes=result_string
 
-    
     def handle_otp(self,otp):
         otp_file_data = read_json_file(self.otp_file_path)
         entry_otp = otp_file_data["entry_otp"]
@@ -127,6 +122,13 @@ class KeypadController:
             return
 
         logger.debug(f"Wrong otp received: {otp}")
+
+
+
+
+
+
+
 
 
 
