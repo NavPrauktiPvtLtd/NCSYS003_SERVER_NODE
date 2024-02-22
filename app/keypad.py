@@ -73,10 +73,7 @@ class KeypadController:
         if self.keystrokes:
             result_string = self.keystrokes[:-1]
             self.keystrokes=result_string
-            # return result_string
-        # else:
-        #     return ''
-    
+
     def handle_otp(self,otp):
         otp_file_data = read_json_file(self.otp_file_path)
         entry_otp = otp_file_data["entry_otp"]
