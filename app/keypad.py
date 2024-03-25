@@ -1,4 +1,4 @@
-from pynput.keyboard import Listener, Key
+from evdev import InputDevice, ecodes, categorize
 from logger.logger import setup_applevel_logger
 from utils import read_json_file,write_json_file
 from constants import OTP_FILE_PATH,ACTIVATION_CODE
@@ -6,6 +6,10 @@ from constants import OTP_FILE_PATH,ACTIVATION_CODE
 logger = setup_applevel_logger(__name__,'log.txt')
 
 OTP_LENGTH = 6
+
+event_path = "/dev/input/event11"  # Replace X with the appropriate number for your keyboard
+
+keyboard = InputDevice(event_path)
 
 class KeypadController:
     def __init__(self,mqtt_client,relay_room_no,lock_controller):
@@ -23,37 +27,64 @@ class KeypadController:
 
     def run(self):
         logger.debug("Keypad activated")
-        with Listener(on_press=self.on_keypress) as listener:
-            listener.join()
-
+        for event in keyboard.read_loop():
+            if event.type == ecodes.EV_KEY:
+                key_event = categorize(event)
+                if key_event.keystate == key_event.key_down:
+                        self.on_key_press(key_event.keycode)
     def clear(self):
         self.keystrokes = ''
 
     def on_keypress(self,key):
-        try:
-            key = key.char
-        except AttributeError:
-            pass
-        
-        # logger.debug(f"{key} is pressed")
-
-        if key == Key.shift:
-            return
-
-        if key == Key.enter:
+        if key == "KEY_ENTER":
             self.handle_enter_press()
+            return 
+
+        if key == "KEY_LEFTSHIFT" or key == "KEY_RIGHTSHIFT":
+            self.shift_pressed = True 
+            return
+
+        if self.shift_pressed and key == "KEY_3":
+            keystrokes = keystrokes + '#'
+            self.shift_pressed = False 
+            return
+
+        if self.shift_pressed and key == "KEY_8":
+            self.keystrokes = keystrokes + '*'
+            self.shift_pressed = False  
             return
         
-        if key == Key.backspace:
+        if key == "KEY_BACKSPACE":
             self.handle_backspace_press()
             return
+        
+        if key == "KEY_1":
+            self.keystrokes += '1'
+        elif key == "KEY_2":
+            self.keystrokes += '2'
+        elif key == "KEY_3":
+            self.keystrokes += '3'
+        elif key == "KEY_4":
+            self.keystrokes += '4'
+        elif key == "KEY_5":
+            self.keystrokes += '5'
+        elif key == "KEY_6":
+            self.keystrokes += '6'
+        elif key == "KEY_7":
+            self.keystrokes += '7'
+        elif key == "KEY_8":
+            self.keystrokes += '8'
+        elif key == "KEY_9":
+            self.keystrokes += '9'
+        elif key == "KEY_0":
+            self.keystrokes += '0'
 
-        self.keystrokes = self.keystrokes + key
+        self.shift_pressed = False
         
 
     def handle_enter_press(self):
         logger.debug(f"Enter pressed: {self.keystrokes}")
-        # check if activation code is already pressed and ketstrokes matches the otp length
+        # check if activation code is already pressed and keystrokes matches the otp length
         if self.activation_code_pressed and len(self.keystrokes) == self.otp_length:
             # this means this is the otp
             self.handle_otp(self.keystrokes)
