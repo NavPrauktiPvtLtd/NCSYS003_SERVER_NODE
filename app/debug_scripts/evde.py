@@ -1,6 +1,6 @@
 from evdev import InputDevice, ecodes, categorize
 
-event_path = "/dev/input/event11"  # Replace X with the appropriate number for your keyboard
+event_path = "/dev/input/event18"  # Replace X with the appropriate number for your keyboard
 
 keyboard = InputDevice(event_path)
 
@@ -11,6 +11,7 @@ shift_pressed = False
 keystrokes = ''
 
 def on_key_press(key):
+    print(key)
     global keystrokes, shift_pressed
 
     if key == "KEY_ENTER":
@@ -56,6 +57,8 @@ def on_key_press(key):
         keystrokes += '9'
     elif key == "KEY_0":
         keystrokes += '0'
+    elif key == "KEY_DOT":
+        keystrokes += '.'
 
     shift_pressed = False
     print(keystrokes)
