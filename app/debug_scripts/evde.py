@@ -1,6 +1,6 @@
 from evdev import InputDevice, ecodes, categorize
 
-event_path = "/dev/input/event18"  # Replace X with the appropriate number for your keyboard
+event_path = "/dev/input/event1"  # Replace X with the appropriate number for your keyboard
 
 keyboard = InputDevice(event_path)
 
