@@ -36,6 +36,7 @@ class KeypadController:
         self.keystrokes = ''
 
     def on_keypress(self,key):
+        logger.debug(f'key pressed {key}')
         if key == "KEY_ENTER":
             self.handle_enter_press()
             return 
