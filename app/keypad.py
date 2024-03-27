@@ -31,7 +31,7 @@ class KeypadController:
             if event.type == ecodes.EV_KEY:
                 key_event = categorize(event)
                 if key_event.keystate == key_event.key_down:
-                        self.on_keypres(key_event.keycode)
+                        self.on_keypress(key_event.keycode)
     def clear(self):
         self.keystrokes = ''
 
@@ -45,12 +45,12 @@ class KeypadController:
             return
 
         if self.shift_pressed and key == "KEY_3":
-            keystrokes = keystrokes + '#'
+            self.keystrokes = self.keystrokes + '#'
             self.shift_pressed = False 
             return
 
         if self.shift_pressed and key == "KEY_8":
-            self.keystrokes = keystrokes + '*'
+            self.keystrokes = self.keystrokes + '*'
             self.shift_pressed = False  
             return
         
