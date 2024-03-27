@@ -1,13 +1,13 @@
 from evdev import InputDevice, ecodes, categorize
 from logger.logger import setup_applevel_logger
 from utils import read_json_file,write_json_file
-from constants import OTP_FILE_PATH,ACTIVATION_CODE
+from constants import OTP_FILE_PATH,ACTIVATION_CODE,EVENT_X
 
 logger = setup_applevel_logger(__name__,'log.txt')
 
 OTP_LENGTH = 6
 
-event_path = "/dev/input/event11"  # Replace X with the appropriate number for your keyboard
+event_path = EVENT_X
 
 keyboard = InputDevice(event_path)
 
@@ -31,7 +31,7 @@ class KeypadController:
             if event.type == ecodes.EV_KEY:
                 key_event = categorize(event)
                 if key_event.keystate == key_event.key_down:
-                        self.on_key_press(key_event.keycode)
+                        self.on_keypres(key_event.keycode)
     def clear(self):
         self.keystrokes = ''
 
@@ -78,6 +78,8 @@ class KeypadController:
             self.keystrokes += '9'
         elif key == "KEY_0":
             self.keystrokes += '0'
+        elif key == "KEY_DOT":
+            self.keystrokes += '.'
 
         self.shift_pressed = False
         
