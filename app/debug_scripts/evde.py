@@ -1,14 +1,13 @@
 from evdev import InputDevice, ecodes, categorize
 # from app.constants import EVENT_X
 
-event_path = '/dev/input/by-path/pci-0000:01:00.0-usb-0:2:1.0-event-kbd'
+event_path1 = '/dev/input/by-id/usb-Cypress_Semiconductor_Composite_Device_Demo-event-kbd'
+event_path2 = '/dev/input/by-id/usb-SINO_WEALTH_RK_Bluetooth_Keyboard-event-kbd'
  
-keyboard = InputDevice(event_path)
+keyboard1 = InputDevice(event_path1)
+keyboard2 = InputDevice(event_path2)
 
-
-
-shift_pressed = False 
-
+shift_pressed = False
 keystrokes = ''
 
 def on_key_press(key):
@@ -18,26 +17,26 @@ def on_key_press(key):
     if key == "KEY_ENTER":
         if keystrokes == "#123#":
             print("CODE PRESSED")
-        keystrokes = '' 
+        keystrokes = ''
 
     if key == "KEY_LEFTSHIFT" or key == "KEY_RIGHTSHIFT":
-         shift_pressed = True 
-         return
+        shift_pressed = True
+        return
 
-    if shift_pressed and "KEY_3":
-         keystrokes = keystrokes + '#'
-         shift_pressed = False 
-         return
+    if shift_pressed and key == "KEY_3":  # Corrected the condition here
+        keystrokes += '#'
+        shift_pressed = False
+        return
 
-    if shift_pressed and "KEY_8":
-         keystrokes = keystrokes + '*'
-         shift_pressed = False  
-         return
-    
+    if shift_pressed and key == "KEY_8":  # Corrected the condition here
+        keystrokes += '*'
+        shift_pressed = False
+        return
+
     if key == "KEY_BACKSPACE":
         keystrokes = keystrokes[:-1]
         return
-    
+
     if key == "KEY_1":
         keystrokes += '1'
     elif key == "KEY_2":
@@ -64,10 +63,15 @@ def on_key_press(key):
     shift_pressed = False
     print(keystrokes)
 
-# Listen for events
-for event in keyboard.read_loop():
-    if event.type == ecodes.EV_KEY:
-        key_event = categorize(event)
+# Listen for events from both devices
+for event1, event2 in zip(keyboard1.read_loop(), keyboard2.read_loop()):
+# for event2 in keyboard2.read_loop():
+    if event2.type == ecodes.EV_KEY:
+        key_event = categorize(event2)
         if key_event.keystate == key_event.key_down:
-            # if key_event.keycode in target_keys:
-                on_key_press(key_event.keycode)
+            on_key_press(key_event.keycode)
+
+    if event1.type == ecodes.EV_KEY:
+        key_event = categorize(event1)
+        if key_event.keystate == key_event.key_down:
+            on_key_press(key_event.keycode)

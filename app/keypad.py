@@ -7,12 +7,9 @@ logger = setup_applevel_logger(__name__,'log.txt')
 
 OTP_LENGTH = 6
 
-event_path = EVENT_X
-
-keyboard = InputDevice(event_path)
 
 class KeypadController:
-    def __init__(self,mqtt_client,relay_room_no,lock_controller):
+    def __init__(self,mqtt_client,relay_room_no,lock_controller,event_path):
         try:
             self.activation_code = ACTIVATION_CODE 
             self.keystrokes = ''
@@ -23,12 +20,13 @@ class KeypadController:
             self.otp_file_path = OTP_FILE_PATH 
             self.lock_controller = lock_controller
             self.shift_pressed = False
+            self.keyboard = InputDevice(event_path)
         except Exception as e: 
             logger.error(e)
 
     def run(self):
         logger.debug("Keypad activated")
-        for event in keyboard.read_loop():
+        for event in self.keyboard.read_loop():
             if event.type == ecodes.EV_KEY:
                 key_event = categorize(event)
                 if key_event.keystate == key_event.key_down:

@@ -11,7 +11,7 @@ from logger.logger import setup_applevel_logger
 from utils import get_data_from_message, publish_message
 from keypad import KeypadController
 from utils import read_json_file,write_json_file,generate_absolute_path
-from constants import OTP_FILE_PATH,RELAY_ROOM_NO,MQTT_HOST,DEFAULT_OTP
+from constants import OTP_FILE_PATH,RELAY_ROOM_NO,MQTT_HOST,DEFAULT_OTP,KEYBOARD_1_EVENT_X,KEYBOARD_2_EVENT_X
 from door import DoorController
 from lock import LockController
 
@@ -53,7 +53,8 @@ class APP:
         self.relay_room_no = relay_room_no
         self.mqtt_host = mqtt_host
         self.door_controller = None 
-        self.key_controller = None 
+        self.key_1_controller = None 
+        self.key_2_controller = None 
         self.lock_controller = None
         # self.mqtt_username = mqtt_username
         # self.mqtt_password = mqtt_password
@@ -148,11 +149,17 @@ class APP:
         else:
             self.door_controller.run()
 
-    def start_keypad(self):
-        if self.key_controller == None:
+    def start_keypad_1(self):
+        if self.key_1_controller == None:
             logger.error("Keypad controller not initialize")
         else:
-            self.key_controller.run()
+            self.key_1_controller.run()
+
+    def start_keypad_2(self):
+        if self.key_2_controller == None:
+            logger.error("Keypad controller not initialize")
+        else:
+            self.key_2_controller.run()
 
     def lock_state_tracker(self):
         if self.lock_controller == None:
@@ -185,7 +192,9 @@ class APP:
             )
             self.door_controller = DoorController(self.client,self.relay_room_no)
             self.lock_controller = LockController(self.client,self.relay_room_no)
-            self.key_controller = KeypadController(self.client,self.relay_room_no,self.lock_controller)
+            self.key_1_controller = KeypadController(self.client,self.relay_room_no,self.lock_controller,KEYBOARD_1_EVENT_X)
+            self.key_2_controller = KeypadController(self.client,self.relay_room_no,self.lock_controller,KEYBOARD_2_EVENT_X)
+
            
             self.client.loop_forever()
         except Exception as e:
@@ -199,7 +208,9 @@ app = APP(RELAY_ROOM_NO, MQTT_HOST)
 t1 = Thread(target=app.start)
 t2 = Thread(target=app.door_state_tracker)
 t3 = Thread(target=app.lock_state_tracker)
-t4 = Thread(target=app.start_keypad)
+t4 = Thread(target=app.start_keypad_1)
+t5 = Thread(target=app.start_keypad_2)
+
 
 
 
@@ -210,4 +221,6 @@ time.sleep(1)
 t3.start()
 time.sleep(1)
 t4.start()
+time.sleep(1)
+t5.start()
 
