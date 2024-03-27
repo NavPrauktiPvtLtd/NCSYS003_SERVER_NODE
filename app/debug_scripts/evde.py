@@ -1,7 +1,7 @@
 from evdev import InputDevice, ecodes, categorize
 # from app.constants import EVENT_X
 
-event_path = '/dev/input/event3'
+event_path = '/dev/input/by-path/pci-0000:01:00.0-usb-0:2:1.0-event-kbd'
  
 keyboard = InputDevice(event_path)
 

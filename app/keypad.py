@@ -22,6 +22,7 @@ class KeypadController:
             self.otp_length = OTP_LENGTH
             self.otp_file_path = OTP_FILE_PATH 
             self.lock_controller = lock_controller
+            self.shift_pressed = False
         except Exception as e: 
             logger.error(e)
 
