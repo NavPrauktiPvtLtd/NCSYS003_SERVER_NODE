@@ -1,7 +1,8 @@
 from evdev import InputDevice, ecodes, categorize
+from app.constants import EVENT_X
 
-event_path = "/dev/input/event1"  # Replace X with the appropriate number for your keyboard
-
+event_path = EVENT_X 
+ 
 keyboard = InputDevice(event_path)
 
 
