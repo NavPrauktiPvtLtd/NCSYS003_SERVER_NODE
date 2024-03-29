@@ -11,7 +11,7 @@ from logger.logger import setup_applevel_logger
 from utils import get_data_from_message, publish_message
 from keypad import KeypadController
 from utils import read_json_file,write_json_file,check_connection
-from constants import OTP_FILE_PATH,RELAY_ROOM_NO,MQTT_HOST,DEFAULT_OTP,KEYBOARD_1_EVENT_X,KEYBOARD_2_EVENT_X
+from constants import OTP_FILE_PATH,RELAY_ROOM_NO,MQTT_HOST,DEFAULT_OTP,KEYBOARD_1_EVENT_X,KEYBOARD_2_EVENT_X,MQTT_PASSWORD,MQTT_USERNAME
 from door import DoorController
 from lock import LockController
 
@@ -47,7 +47,7 @@ def format_topic_name(x):
 
 class APP:
     def __init__(
-        self, relay_room_no, mqtt_host
+        self, relay_room_no, mqtt_host,mqtt_username,mqtt_password
     ):
         self.client = None
         self.relay_room_no = relay_room_no
@@ -56,8 +56,8 @@ class APP:
         self.key_1_controller = None 
         self.key_2_controller = None 
         self.lock_controller = None
-        # self.mqtt_username = mqtt_username
-        # self.mqtt_password = mqtt_password
+        self.mqtt_username = mqtt_username
+        self.mqtt_password = mqtt_password
 
     def on_mqtt_connect(self, client, userdata, flags, rc):
         if rc == 0:
@@ -212,7 +212,7 @@ def app_start():
         time.sleep(5)
         app_start()
         
-    app = APP(RELAY_ROOM_NO, MQTT_HOST)
+    app = APP(RELAY_ROOM_NO, MQTT_HOST,MQTT_USERNAME,MQTT_PASSWORD)
 
     t1 = Thread(target=app.start)
     t2 = Thread(target=app.door_state_tracker)
