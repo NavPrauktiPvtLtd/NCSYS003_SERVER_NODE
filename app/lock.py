@@ -19,7 +19,7 @@ class LockController:
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.RELAY_PIN, GPIO.OUT)
-        GPIO.output(self.RELAY_PIN, GPIO.LOW)
+        GPIO.output(self.RELAY_PIN, GPIO.HIGH)
 
     def is_locked(self):
         return GPIO.input(self.RELAY_PIN) == GPIO.HIGH

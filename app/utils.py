@@ -3,6 +3,7 @@ import json
 from dotenv import load_dotenv
 import paho.mqtt.client as mqtt
 import os
+import socket
 
 load_dotenv()
 
@@ -53,5 +54,27 @@ def check_and_create_file(file_path, initial_content=None):
         logger.info(f"File '{file_path}' created.")
     else:
         logger.info(f"File '{file_path}' already exists.")
+
+def check_connection(ip_address, port):
+    try:
+        # Creating a socket object
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
+        # Setting a timeout for the connection attempt (adjust as needed)
+        s.settimeout(3)  # Timeout set to 3 seconds
+        
+        # Attempting to connect to the IP address and port
+        s.connect((ip_address, port))
+        
+        # Connection successful
+        print(f"Connected to {ip_address}:{port}")
+        return True
+    except Exception as e:
+        # Connection unsuccessful
+        print(f"Failed to connect to {ip_address}:{port}. Error: {str(e)}")
+        return False
+    finally:
+        # Always close the socket
+        s.close()
 
 

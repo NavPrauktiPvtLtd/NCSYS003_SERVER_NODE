@@ -1,0 +1,13 @@
+[Unit]
+Description=NFR keyboard Listner
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/pi/nfr/NCSYS003_SERVER_NODE/run.sh
+User=root
+Group=root
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

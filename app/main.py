@@ -1,7 +1,7 @@
 import os
 import time
 import json
-
+import sleep
 from threading import Thread
 
 from dotenv import load_dotenv
@@ -10,7 +10,7 @@ from topic import Topic
 from logger.logger import setup_applevel_logger
 from utils import get_data_from_message, publish_message
 from keypad import KeypadController
-from utils import read_json_file,write_json_file,generate_absolute_path
+from utils import read_json_file,write_json_file,check_connection
 from constants import OTP_FILE_PATH,RELAY_ROOM_NO,MQTT_HOST,DEFAULT_OTP,KEYBOARD_1_EVENT_X,KEYBOARD_2_EVENT_X
 from door import DoorController
 from lock import LockController
@@ -179,7 +179,7 @@ class APP:
                 ),
                 qos=2,
             )
-            # self.client.username_pw_set(self.mqtt_username, self.mqtt_password)
+            self.client.username_pw_set(self.mqtt_username, self.mqtt_password)
             self.client.connect(host=self.mqtt_host)
             self.client.on_connect = self.on_mqtt_connect
             self.client.on_disconnect = self.on_mqtt_disconnect
@@ -203,24 +203,35 @@ class APP:
             self.start()
 
 
-app = APP(RELAY_ROOM_NO, MQTT_HOST)
-
-t1 = Thread(target=app.start)
-t2 = Thread(target=app.door_state_tracker)
-t3 = Thread(target=app.lock_state_tracker)
-t4 = Thread(target=app.start_keypad_1)
-t5 = Thread(target=app.start_keypad_2)
 
 
+def app_start():
+    is_connected = check_connection(MQTT_HOST,1883)
+
+    if not is_connected:
+        sleep(5)
+        app_start()
+        
+    app = APP(RELAY_ROOM_NO, MQTT_HOST)
+
+    t1 = Thread(target=app.start)
+    t2 = Thread(target=app.door_state_tracker)
+    t3 = Thread(target=app.lock_state_tracker)
+    t4 = Thread(target=app.start_keypad_1)
+    t5 = Thread(target=app.start_keypad_2)
 
 
-t1.start()
-time.sleep(2)
-t2.start()
-time.sleep(1)
-t3.start()
-time.sleep(1)
-t4.start()
-time.sleep(1)
-t5.start()
+
+
+    t1.start()
+    time.sleep(2)
+    t2.start()
+    time.sleep(1)
+    t3.start()
+    time.sleep(1)
+    t4.start()
+    time.sleep(1)
+    t5.start()
+
+app_start()
 
