@@ -1,7 +1,7 @@
 import os
 import time
 import json
-import sleep
+import time
 from threading import Thread
 
 from dotenv import load_dotenv
@@ -209,7 +209,7 @@ def app_start():
     is_connected = check_connection(MQTT_HOST,1883)
 
     if not is_connected:
-        sleep(5)
+        time.sleep(5)
         app_start()
         
     app = APP(RELAY_ROOM_NO, MQTT_HOST)
