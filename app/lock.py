@@ -28,7 +28,7 @@ class LockController:
         try:
             # check if the lock is already opened
             if self.is_locked():
-                logger.debug("unlocked")
+                logger.info("unlocked")
                 GPIO.output(self.RELAY_PIN, GPIO.LOW)
                 publish_message(
                     self.mqtt_client,
@@ -44,7 +44,7 @@ class LockController:
     def close(self):
         try:
             if not self.is_locked():
-                logger.debug("locked")
+                logger.info("locked")
                 GPIO.output(self.RELAY_PIN, GPIO.HIGH)
                 publish_message(
                 self.mqtt_client,

@@ -25,7 +25,7 @@ class KeypadController:
             logger.error(e)
 
     def run(self):
-        logger.debug("Keypad activated")
+        logger.info("Keypad activated")
         for event in self.keyboard.read_loop():
             if event.type == ecodes.EV_KEY:
                 key_event = categorize(event)
@@ -94,7 +94,7 @@ class KeypadController:
             return
         # check if activation code is pressed 
         if self.keystrokes == self.activation_code:
-            logger.debug(f"Activation code pressed")
+            logger.info(f"Activation code pressed")
             self.activation_code_pressed = True
             self.clear()
         else: 
@@ -115,7 +115,7 @@ class KeypadController:
 
 
         if entry_otp == otp: 
-            logger.debug(f"OTP matched : {otp}")
+            logger.info(f"OTP matched : {otp}")
             logger.debug(f"Unlocking....")
             self.lock_controller.open()
             previous_otp_data = read_json_file(OTP_FILE_PATH)
@@ -132,7 +132,7 @@ class KeypadController:
             return 
 
         if exit_otp == otp: 
-            logger.debug(f"OTP matched : {otp}")
+            logger.info(f"OTP matched : {otp}")
             logger.debug(f"Unlocking....")
             self.lock_controller.open()
             previous_otp_data = read_json_file(OTP_FILE_PATH)
@@ -149,12 +149,12 @@ class KeypadController:
             return 
 
         if default_otp == otp: 
-            logger.debug(f"OTP matched : {otp}")
+            logger.info(f"OTP matched : {otp}")
             logger.debug(f"Unlocking....")
             self.lock_controller.open()
             return
 
-        logger.debug(f"Wrong otp received: {otp}")
+        logger.info(f"Wrong otp received: {otp}")
 
 
 
