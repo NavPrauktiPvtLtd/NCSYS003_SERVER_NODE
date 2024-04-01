@@ -33,7 +33,7 @@ class DoorController:
         return GPIO.input(self.INPUT_PIN) == GPIO.LOW
     
     def run(self):
-        logger.debug('Door tracking activated')
+        logger.info('Door tracking activated')
         try:
             while True:
                 current_state = self.check_input_pin()

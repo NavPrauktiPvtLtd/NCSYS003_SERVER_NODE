@@ -17,7 +17,7 @@ from lock import LockController
 
 load_dotenv()
    
-logger = setup_applevel_logger(__name__,'log.txt')
+logger = setup_applevel_logger(__name__,'logs.txt')
 
 if not RELAY_ROOM_NO:
     logger.error("Relay Room No not found")
@@ -38,9 +38,9 @@ if not os.path.exists(OTP_FILE_PATH):
     with open(OTP_FILE_PATH, 'w') as file:
         file.write(json.dumps(otp_content, indent=4))
 
-    print(f"OTP file created at: {OTP_FILE_PATH}")
+    logger.info(f"OTP file created at: {OTP_FILE_PATH}")
 else:
-    print(f"OTP file already exists at: {OTP_FILE_PATH}")
+    logger.info(f"OTP file already exists at: {OTP_FILE_PATH}")
 
 def format_topic_name(x):
     return f"{RELAY_ROOM_NO}-{x}"
@@ -98,7 +98,7 @@ class APP:
                 entryOtp = msgData["entry_otp"]
                 exitOtp = msgData["exit_otp"]
 
-                logger.debug(f"received otp {entryOtp},{exitOtp}")
+                logger.info(f"received otp {entryOtp},{exitOtp}")
 
                 if entryOtp and exitOtp:
                     previous_otp_data = read_json_file(OTP_FILE_PATH)
@@ -123,7 +123,7 @@ class APP:
             if msgData:
                 otp = msgData["defaultOtp"]
 
-                logger.debug(f"received otp {otp}")
+                logger.info(f"received default otp {otp}")
 
                 if otp:
                     previous_otp_data = read_json_file(OTP_FILE_PATH)
@@ -209,6 +209,7 @@ def app_start():
     is_connected = check_connection(MQTT_HOST,1883)
 
     if not is_connected:
+        logger.info("server not reachable. retrying again in 5 seconds....")
         time.sleep(5)
         app_start()
         

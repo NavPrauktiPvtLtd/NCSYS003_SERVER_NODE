@@ -70,13 +70,7 @@ class LockController:
 
                 
                 if self.unlocked_seconds == int(self.auto_lock_interval):
-                    logger.debug(f'autolocking the lock.....')
-                    # publish_message(
-                    #     self.mqtt_client,
-                    #     Topic.LOCK_STATUS,
-                    #     {"relayRoomNo": self.relay_room_no, "isSuccessful": False},
-                    #     qos=1,
-                    # )
+                    logger.info(f'autolocking the lock.....')
                     self.close()
                     self.unlocked_seconds = 0 
                 

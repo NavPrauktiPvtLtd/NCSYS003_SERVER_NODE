@@ -57,24 +57,15 @@ def check_and_create_file(file_path, initial_content=None):
 
 def check_connection(ip_address, port):
     try:
-        # Creating a socket object
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        
-        # Setting a timeout for the connection attempt (adjust as needed)
-        s.settimeout(3)  # Timeout set to 3 seconds
-        
-        # Attempting to connect to the IP address and port
+        s.settimeout(3)
         s.connect((ip_address, port))
-        
-        # Connection successful
-        print(f"Connected to {ip_address}:{port}")
+        logger.info(f"Connected to {ip_address}:{port}")
         return True
     except Exception as e:
-        # Connection unsuccessful
-        print(f"Failed to connect to {ip_address}:{port}. Error: {str(e)}")
+        logger.error(f"Failed to connect to {ip_address}:{port}. Error: {str(e)}")
         return False
     finally:
-        # Always close the socket
         s.close()
 
 
