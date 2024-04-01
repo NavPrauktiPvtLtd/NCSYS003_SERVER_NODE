@@ -3,7 +3,7 @@ from logger.logger import setup_applevel_logger
 from utils import read_json_file,write_json_file
 from constants import OTP_FILE_PATH,ACTIVATION_CODE
 
-logger = setup_applevel_logger(__name__,'log.txt')
+logger = setup_applevel_logger(__name__,'logs.txt')
 
 OTP_LENGTH = 6
 

@@ -7,7 +7,7 @@ import socket
 
 load_dotenv()
 
-logger = setup_applevel_logger(__name__,'log.txt')
+logger = setup_applevel_logger(__name__,'logs.txt')
 
 
 def generate_absolute_path(relative_path):
